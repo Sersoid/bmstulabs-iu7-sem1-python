@@ -17,7 +17,10 @@
 start = float(input("Введите начальное значение: "))  # -0.8
 finish = float(input("Введите конечное значение: "))  # 1.2
 step = float(input("Введите длину шага: "))  # 0.05
-serifs_count = int(input("Введите кол-во засечек на оси графика: "))  # 4-8
+serifs_count = int(input("Введите кол-во засечек на оси графика(4-8): "))  # от 4 до 8
+if serifs_count > 8 or serifs_count < 4:
+    print("Кол-во засечек должно иметь значение от 4 до 8!!!")
+    exit()
 
 # Таблица
 print(
@@ -63,8 +66,7 @@ for i in range(serifs_count):
     serifs += ("{:<" + str(serif_step) + ".5g}").format(min_y + i * value_step)
 
 print(
-    serifs + \
-    "\n   x     \\" + "─" * 98 + "/"
+    f"{serifs}\n   x     \\" + "─" * 98 + "/"
 )
 
 for step_index in range(steps_count + 1):
