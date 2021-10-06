@@ -10,7 +10,7 @@
 #   Шаг: 0.05
 #   Конечное значение: 1.2
 # Дополнительное задание:
-#   Найти пару (x, y) при которой значение y минимально
+#   Найти пару (b, y) при которой значение y минимально
 # ----------------------------------------------------------------------------------------------------------------------
 
 # Входные данные
@@ -26,7 +26,7 @@ if serifs_count > 8 or serifs_count < 4:
 print(
     "\ny = b^9 + 34b^8 - 2b^7 + 24b^6 - 76b^5 + 33b^4 - b^3 + 3b^2 + 7b - 33\n"
     "┌─────────────┬─────────────┐\n"
-    "│      x      │      y      │\n"
+    "│      b      │      y      │\n"
     "├─────────────┼─────────────┤"
 )
 
@@ -66,7 +66,7 @@ for i in range(serifs_count):
     serifs += ("{:<" + str(serif_step) + ".5g}").format(min_y + i * value_step)
 
 print(
-    f"{serifs}\n   x   ┌──\\" + "─" * 98 + "/"
+    f"{serifs}\n   b   ┌──\\" + "─" * 98 + "/"
 )
 
 for step_index in range(steps_count + 1):
@@ -78,17 +78,17 @@ for step_index in range(steps_count + 1):
     if x_axis:
         if x_axis > point:
             if point == 0:
-                print(f"○{' ' * (x_axis - 2)}│")
+                print(f"*{' ' * (x_axis - 2)}│")
             else:
-                print(f"{' ' * (point - 1)}○{' ' * (x_axis - point - 1)}│")
+                print(f"{' ' * (point - 1)}*{' ' * (x_axis - point - 1)}│")
         elif x_axis < point:
-            print(f"{' ' * (x_axis - 1)}│{' ' * (point - x_axis - 1)}○")
+            print(f"{' ' * (x_axis - 1)}│{' ' * (point - x_axis - 1)}*")
         else:
-            print(f"{' ' * (x_axis - 1)}○")
+            print(f"{' ' * (x_axis - 1)}*")
     else:
-        print(f"{' ' * (point - 1)}○")
+        print(f"{' ' * (point - 1)}*")
 
 print("─" * 7 + "┴──/" + "─" * 98 + "\\")
 
 # Ответ на дополнительный вопрос
-print(f"\nМинимальное значение y = {format(min_y, '.5g')} достигается при x = {format(x_min_y, '.5g')}")
+print(f"\nМинимальное значение y = {format(min_y, '.5g')} достигается при b = {format(x_min_y, '.5g')}")
