@@ -9,14 +9,30 @@
 # Степнов Сергей
 # Группа ИУ7-16Б
 
+
+def check_input(raw_input, input_type):
+    if raw_input:
+        dot_count = raw_input.count(".")
+        minus_count = raw_input.count("-")
+        if 1 >= minus_count >= 0 == dot_count and raw_input.isdigit():
+            return input_type(raw_input)
+        elif 0 <= minus_count <= 1 == dot_count and raw_input.replace(".", "").replace("-", "").isdigit() and \
+                input_type == float:
+            return input_type(raw_input)
+        else:
+            return None
+    else:
+        return None
+
+
 # Основной список
 array = []
 
 while True:
     # Вывод меню
-    operation = int(input(
+    operation = check_input(input(
         "Выберите действие:\n"
-        "1) Инициализировать список первыми N элементами ряда чисел из 52 варианта л/р 5\n"
+        "1) Инициализировать список первыми N элементами ряда чисел (−1)^n * (2n + 1) * x^(2n)\n"
         "2) Очистить список и ввести его с клавиатуры\n"
         "3) Добавить элемент в произвольное место списка\n"
         "4) Удалить произвольный элемент из списка\n"
@@ -25,10 +41,10 @@ while True:
         "7) Найти наиболее длинную знакочередующуюся последовательность чётных чисел\n"
         "0) Выйти из программы\n"
         ">>> "
-    ))
+    ), int)
 
     # Проверка на дурака
-    if not 0 <= operation <= 7:
+    if operation is None or not 0 <= operation <= 7:
         print("\nНет такой команды...\n")
         continue
 
@@ -37,14 +53,20 @@ while True:
         exit()
 
     # Проверка на существование элементов в списке
-    if not array and operation != 1:
-        print("\nДля работы команды необходимо проинициализировать список с помощью команды '1'!\n")
+    if not array and operation != 1 and operation != 2 and operation != 3 and operation != 5:
+        print("\nДля работы команды список должен быть не пустым!\n")
     else:
         if operation == 1:
             # 1) Инициализировать список первыми N элементами ряда чисел из 52 варианта л/р 5
-            print("\nИнициализация списка\nЧисловой ряд: 1, 3x^2, 5x^4, ..., (−1)^(n − 1) * (2n + 1) * x^(2n)")
-            x = float(input("Введите значение аргумента x: "))
-            n = int(input("Введите кол-во элементов ряда: "))
+            print("\nИнициализация списка\nЧисловой ряд: 1, 3x^2, 5x^4, ..., (−1)^n * (2n + 1) * x^(2n)")
+            x = check_input(input("Введите значение аргумента x: "), float)
+            if x is None:
+                print("\nВводите корректные данные!\n")
+                continue
+            n = check_input(input("Введите кол-во элементов ряда: "), int)
+            if n is None:
+                print("\nВводите корректные данные!\n")
+                continue
 
             if n < 1:
                 print("\nКол-во элементов числового ряда должно быть больше 0!\n")
@@ -57,17 +79,32 @@ while True:
         elif operation == 2:
             # 2) Очистить список и ввести его с клавиатуры
             print("\nВвод нового списка с клавиатуры")
+            n = check_input(input("Введите длину нового списка: "), int)
+            if n is None:
+                print("\nВводите корректные данные!\n")
+                continue
 
-            for index in range(len(array)):
-                new_elem = float(input(f"Введите новый элемент списка под номером {index + 1}: "))
-                array[index] = new_elem
+            array.clear()
+
+            for index in range(n):
+                new_elem = check_input(input(f"Введите элемент списка под номером {index + 1}: "), float)
+                if new_elem is None:
+                    print("\nВводите корректные данные!\n")
+                    continue
+                array.append(new_elem)
 
             print(f"\nНовый список:\n{array}\n")
         elif operation == 3:
             # 3) Добавить элемент в произвольное место списка
             print("\nДобавление элемента в произвольное место списка")
-            elem = float(input("Введите значение элемента: "))
-            index = int(input("Введите номер в списке: "))
+            elem = check_input(input("Введите значение элемента: "), float)
+            if elem is None:
+                print("\nВводите корректные данные!\n")
+                continue
+            index = check_input(input("Введите номер в списке: "), int)
+            if index is None:
+                print("\nВводите корректные данные!\n")
+                continue
 
             array.insert(index - 1, elem)
 
@@ -78,7 +115,10 @@ while True:
         elif operation == 4:
             # 4) Удалить произвольный элемент из списка (по номеру)
             print("\nУдаление элемента из произвольного места в списке")
-            index = int(input("Введите номер в списке: "))
+            index = check_input(input("Введите номер в списке: "), int)
+            if index is None:
+                print("\nВводите корректные данные!\n")
+                continue
 
             if 0 <= index - 1 < len(array):
                 del array[index - 1]
@@ -92,23 +132,20 @@ while True:
         elif operation == 6:
             # 6) Найти значение K-го экстремума в списке
             print("\nОтображение K-го экстремума в списке")
-            k = int(input("Введите номер экстремума: "))
+            k = check_input(input("Введите номер экстремума: "), float)
+            if k is None:
+                print("\nВводите корректные данные!\n")
+                continue
 
             extremes = []
             for i in range(1, len(array) - 1):
-                if array[i - 1] < array[i] and array[i] > array[i + 1]:
+                if (array[i - 1] < array[i] and array[i] > array[i + 1]) or \
+                        (array[i - 1] <= array[i] and array[i] > array[i + 1]) or \
+                        (array[i - 1] < array[i] and array[i] >= array[i + 1]) or \
+                        (array[i - 1] > array[i] and array[i] < array[i + 1]) or \
+                        (array[i - 1] >= array[i] and array[i] < array[i + 1]) or \
+                        (array[i - 1] > array[i] and array[i] <= array[i + 1]):
                     extremes.append(array[i])
-                elif array[i - 1] <= array[i] and array[i] > array[i + 1]:
-                    extremes.append(array[i])
-                elif array[i - 1] < array[i] and array[i] >= array[i + 1]:
-                    extremes.append(array[i])
-                elif array[i - 1] > array[i] and array[i] < array[i + 1]:
-                    extremes.append(array[i])
-                elif array[i - 1] >= array[i] and array[i] < array[i + 1]:
-                    extremes.append(array[i])
-                elif array[i - 1] > array[i] and array[i] <= array[i + 1]:
-                    extremes.append(array[i])
-
             if extremes:
                 if 0 <= k - 1 < len(extremes):
                     print(f"\nЭкстремум: {extremes[k - 1]}\n")
@@ -131,8 +168,8 @@ while True:
                         temp_sequence = []
 
             if temp_sequence and len(sequence) < len(temp_sequence):
-                sequence = temp_sequence
-                temp_sequence = []
+                sequence = temp_sequence.copy()
+                temp_sequence.clear()
 
             if sequence:
                 print(f"\nИскомая последовательность:\n{sequence}\n")
