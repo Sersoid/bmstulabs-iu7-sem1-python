@@ -12,15 +12,17 @@
 
 def check_input(raw_input, input_type):
     if raw_input:
-        dot_count = raw_input.count(".")
-        minus_count = raw_input.count("-")
-        if 1 >= minus_count >= 0 == dot_count and raw_input.isdigit():
-            return input_type(raw_input)
-        elif 0 <= minus_count <= 1 == dot_count and raw_input.replace(".", "").replace("-", "").isdigit() and \
-                input_type == float:
-            return input_type(raw_input)
-        else:
+        if "e" in raw_input and "" in raw_input.split("e"):
             return None
+        else:
+            processed_input = raw_input.replace("+", "", 1).replace("-", "", 1).replace("e", "", 1).replace(".", "", 1)
+            if processed_input.isdigit():
+                if input_type == int:
+                    return input_type(float(raw_input))
+                else:
+                    return input_type()
+            else:
+                return None
     else:
         return None
 
@@ -84,16 +86,22 @@ while True:
                 print("\nВводите корректные данные!\n")
                 continue
 
-            array.clear()
+            temp_array = []
+            is_crashed = False
 
             for index in range(n):
                 new_elem = check_input(input(f"Введите элемент списка под номером {index + 1}: "), float)
                 if new_elem is None:
                     print("\nВводите корректные данные!\n")
-                    continue
-                array.append(new_elem)
+                    is_crashed = True
+                    break
+                temp_array.append(new_elem)
 
-            print(f"\nНовый список:\n{array}\n")
+            if is_crashed:
+                continue
+            else:
+                array = temp_array
+                print(f"\nНовый список:\n{array}\n")
         elif operation == 3:
             # 3) Добавить элемент в произвольное место списка
             print("\nДобавление элемента в произвольное место списка")
@@ -106,12 +114,14 @@ while True:
                 print("\nВводите корректные данные!\n")
                 continue
 
-            array.insert(index - 1, elem)
+            if index >= 1:
+                array.insert(index - 1, elem)
+                if index - 1 >= len(array):
+                    print("\nЭлемент вставлен в конец списка", end="")
 
-            if index - 1 >= len(array):
-                print("\nЭлемент вставлен в конец списка", end="")
-
-            print(f"\nНовый список:\n{array}\n")
+                print(f"\nНовый список:\n{array}\n")
+            else:
+                print("\nНельзя вставить элемент в это место списка!\n")
         elif operation == 4:
             # 4) Удалить произвольный элемент из списка (по номеру)
             print("\nУдаление элемента из произвольного места в списке")
