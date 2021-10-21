@@ -120,17 +120,26 @@ while True:
             print("\nСписок очищен\n")
         elif operation == "5":
             # 5) Поиск элемента с наибольшим числом подряд идущих пробелов
-            max_spaces_count = 0
             max_spaces_count_elem = None
-            temp_max_spaces_count = 0
+            max_spaces_count = 0
+
             for elem in array:
-                for char in elem:
-                    if char != " " and temp_max_spaces_count and max_spaces_count < temp_max_spaces_count:
-                        max_spaces_count_elem = elem
-                        max_spaces_count = temp_max_spaces_count
-                        temp_max_spaces_count = 0
-                    elif char == " ":
-                        temp_max_spaces_count += 1
+                spaces = 0
+                temp_spaces = 0
+                for i in range(len(elem)):
+                    if elem[i] == " ":
+                        temp_spaces += 1
+                    elif elem[i] != " " and elem[i - 1] == " ":
+                        if spaces < temp_spaces:
+                            spaces = temp_spaces
+                        temp_spaces = 0
+
+                if spaces < temp_spaces:
+                    spaces = temp_spaces
+
+                if max_spaces_count < spaces:
+                    max_spaces_count = spaces
+                    max_spaces_count_elem = elem
 
             if max_spaces_count_elem is None:
                 print("\nВ списке нет элементов с пробелами\n")
@@ -138,14 +147,23 @@ while True:
                 print(f"\nЭлемент с наибольшим количеством подряд идущих пробелов: '{max_spaces_count_elem}'\n")
         else:
             # 6) Замена всех заглавных гласных английских букв на строчные
-            for i in range(len(array)):
+            index = input("Введите номер в списке: ")
+
+            if index.isdigit():
+                index = int(index)
+            else:
+                print("\nВводите корректные данные!\n")
+                continue
+
+            if 0 <= index - 1 < len(array):
                 new_elem = ""
-                for j in range(len(array[i])):
-                    ascii_num = ord(array[i][j])
+                for j in range(len(array[index - 1])):
+                    ascii_num = ord(array[index - 1][j])
                     if 65 <= ascii_num <= 90:
                         new_elem += chr(ascii_num + 32)
                     else:
-                        new_elem += array[i][j]
-                array[i] = new_elem
-
-            print(f"\nНовый список:\n{array}\n")
+                        new_elem += array[index - 1][j]
+                array[index - 1] = new_elem
+                print(f"\nНовый список:\n{array}\n")
+            else:
+                print(f"\nЭлемента с таким номером нет! Возможные значения 1 - {len(array)}\n")
