@@ -13,7 +13,7 @@ array = []
 
 while True:
     # Вывод меню
-    operation = int(input(
+    operation = input(
         "Выберите действие:\n"
         "1) Очистить список и ввести его с клавиатуры\n"
         "2) Добавить элемент в произвольное место списка\n"
@@ -23,25 +23,31 @@ while True:
         "6) Замена всех заглавных гласных английских букв на строчные\n"
         "0) Выйти из программы\n"
         ">>> "
-    ))
+    )
 
     # Проверка на дурака
-    if not 0 <= operation <= 7:
+    if not operation.isdigit() or not 0 <= int(operation) <= 6:
         print("\nНет такой команды...\n")
         continue
 
     # Если вызвана '0' команда - завершение программы
-    if operation == 0:
+    if operation == "0":
         exit()
 
     # Проверка на существование элементов в списке
-    if not array and operation != 1 and operation != 2 and operation != 4:
+    if not array and operation != "1" and operation != "2" and operation != "4":
         print("\nДля работы команды список должен быть не пустым!\n")
-    else:
-        if operation == 1:
+    elif operation:
+        if operation == "1":
             # 1) Очистить список и ввести его с клавиатуры
             print("\nВвод нового списка с клавиатуры")
-            n = int(input("Введите длину нового списка: "))
+            n = input("Введите длину нового списка: ")
+
+            if n.isdigit():
+                n = int(n)
+            else:
+                print("\nВводите корректные данные!\n")
+                continue
 
             array.clear()
 
@@ -50,15 +56,21 @@ while True:
                 array.append(new_elem)
 
             print(f"\nНовый список:\n{array}\n")
-        elif operation == 2:
+        elif operation == "2":
             # 2) Добавить элемент в произвольное место списка
             print("\nДобавление элемента в произвольное место списка")
             elem = input("Введите значение элемента: ")
-            index = int(input("Введите номер в списке: "))
+            index = input("Введите номер в списке: ")
+
+            if index.isdigit():
+                index = int(index)
+            else:
+                print("\nВводите корректные данные!\n")
+                continue
 
             if index >= 1:
                 array_length = len(array)
-                array_last_elem = array[-1]
+                array_last_elem = array[-1] if array_length > 0 else None
 
                 if index - 1 >= array_length:
                     array.append(elem)
@@ -79,10 +91,16 @@ while True:
                 print(f"\nНовый список:\n{array}\n")
             else:
                 print("\nНельзя вставить элемент в это место списка!\n")
-        elif operation == 3:
+        elif operation == "3":
             # 3) Удалить произвольный элемент из списка
             print("\nУдаление элемента из произвольного места в списке")
-            index = int(input("Введите номер в списке: "))
+            index = input("Введите номер в списке: ")
+
+            if index.isdigit():
+                index = int(index)
+            else:
+                print("\nВводите корректные данные!\n")
+                continue
 
             if 0 <= index - 1 < len(array):
                 array_length = len(array)
@@ -96,11 +114,11 @@ while True:
                 print(f"\nЭлемент удалён из списка\nНовый список:\n{array}\n")
             else:
                 print(f"\nЭлемента с таким номером нет! Возможные значения 1 - {len(array)}\n")
-        elif operation == 4:
+        elif operation == "4":
             # 4) Очистить список
             array.clear()
             print("\nСписок очищен\n")
-        elif operation == 5:
+        elif operation == "5":
             # 5) Поиск элемента с наибольшим числом подряд идущих пробелов
             max_spaces_count = 0
             max_spaces_count_elem = None
