@@ -20,7 +20,7 @@ def check_input(raw_input, input_type):
                 if input_type == int:
                     return input_type(float(raw_input))
                 else:
-                    return input_type()
+                    return input_type(raw_input)
             else:
                 return None
     else:
