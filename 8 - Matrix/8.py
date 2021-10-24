@@ -31,7 +31,7 @@ def check_list(array, limit):
     result_array = []
     array_length = len(array)
 
-    for index in range(limit):
+    for index in range(limit if limit else len(array)):
         if index < array_length:
             result = check_input(array[index])
             if result is not None:
@@ -45,13 +45,10 @@ def check_list(array, limit):
 
 
 def print_matrix():
-    if matrix:
-        matrix_print = ""
-        for matrix_row in matrix:
-            matrix_print += " ".join(map(str, matrix_row)) + "\n"
-        return matrix_print
-    else:
-        return "Матрица не задана\n"
+    matrix_print = ""
+    for matrix_row in matrix:
+        matrix_print += " ".join(map(str, matrix_row)) + "\n"
+    return matrix_print
 
 
 settings = {
@@ -131,7 +128,7 @@ while True:
     elif operation:
         if operation == "1":
             # 1) Ввести матрицу
-            n = check_input(input("Введите количество строк матрицы: "))
+            n = check_input(input("\nВведите количество строк матрицы: "))
             if n is None:
                 print("\nВводите корректные данные!\n")
                 continue
@@ -141,6 +138,7 @@ while True:
                 continue
 
             temp_matrix = []
+            is_crash = False
 
             for i in range(n):
                 row = check_list(input("Введите строку матрицы: ").split(), m)
@@ -148,18 +146,20 @@ while True:
                     temp_matrix.append(row)
                 else:
                     print("\nВводите корректные данные!\n")
+                    is_crash = True
                     continue
 
-            matrix = temp_matrix
-            print(f"\nНовая матрица:\n{print_matrix()}\n")
+            if not is_crash:
+                matrix = temp_matrix
+                print(f"\nНовая матрица:\n{print_matrix()}")
         elif operation == "2":
             # 2) Добавить строку
-            n = check_input(input("Введите номер строки матрицы: "))
+            n = check_input(input("\nВведите номер строки матрицы: "))
             if n is None:
                 print("\nВводите корректные данные!\n")
                 continue
 
-            row = check_list(input("Введите строку матрицы: ").split(), len(matrix[0]))
+            row = check_list(input("Введите строку матрицы: ").split(), len(matrix[0]) if matrix else None)
             if not row:
                 print("\nВводите корректные данные!\n")
                 continue
@@ -187,12 +187,12 @@ while True:
                                     matrix[i], prev_elem = prev_elem, matrix[i]
                             if i == matrix_length - 1:
                                 matrix.append(matrix_last_elem)
-                print(f"\nНовая матрица:\n{print_matrix()}\n")
+                print(f"\nНовая матрица:\n{print_matrix()}")
             else:
                 print("\nНельзя вставить строку в это место матрицы!\n")
         elif operation == "3":
             # 3) Удалить строку
-            n = check_input(input("Введите номер строки матрицы: "))
+            n = check_input(input("\nВведите номер строки матрицы: "))
             if n is None:
                 print("\nВводите корректные данные!\n")
                 continue
@@ -207,12 +207,15 @@ while True:
                             matrix[i] = matrix[i + 1]
                         if i == matrix_length - 1:
                             del matrix[-1]
-                print(f"\nСтрока удалена\nНовая матрица:\n{print_matrix()}\n")
+                if matrix:
+                    print(f"\nСтрока удалена\nНовая матрица:\n{print_matrix()}")
+                else:
+                    print("\nСтрока удалена\n")
             else:
                 print(f"\nСтроки с таким номером нет! Возможные значения 1 - {len(matrix)}\n")
         elif operation == "4":
             # 4) Добавить столбец
-            m = check_input(input("Введите номер столбца матрицы: "))
+            m = check_input(input("\nВведите номер столбца матрицы: "))
             if m is None:
                 print("\nВводите корректные данные!\n")
                 continue
@@ -224,40 +227,48 @@ while True:
 
             if m >= 1:
                 if settings["add_col"]:
-                    for i in range(len(matrix)):
-                        matrix[i].insert(m - 1, col[i])
-                    if m - 1 >= len(matrix):
-                        print("\nСтолбец вставлен в конец матрицы", end="")
+                    if matrix:
+                        for i in range(len(matrix)):
+                            matrix[i].insert(m - 1, col[i])
+                        if m - 1 >= len(matrix):
+                            print("\nСтолбец вставлен в конец матрицы", end="")
+                    else:
+                        for elem in col:
+                            matrix.append([elem])
                 else:
-                    row_length = len(matrix[0])
-                    matrix_end = False
+                    if matrix:
+                        row_length = len(matrix[0])
+                        matrix_end = False
 
-                    for i in range(len(matrix)):
-                        row_last_elem = matrix[i][-1] if row_length > 0 else None
+                        for i in range(len(matrix)):
+                            row_last_elem = matrix[i][-1] if row_length > 0 else None
 
-                        if m - 1 >= row_length:
-                            matrix[i].append(col[i])
-                            matrix_end = True
-                        else:
-                            prev_elem = None
-                            for j in range(row_length):
-                                if m - 1 <= i < row_length:
-                                    if prev_elem is None:
-                                        prev_elem = matrix[i][j]
-                                        matrix[i][j] = col[i]
-                                    else:
-                                        matrix[i][j], prev_elem = prev_elem, matrix[i][j]
+                            if m - 1 >= row_length:
+                                matrix[i].append(col[i])
+                                matrix_end = True
+                            else:
+                                prev_elem = None
+                                for j in range(row_length):
+                                    if m - 1 <= i < row_length:
+                                        if prev_elem is None:
+                                            prev_elem = matrix[i][j]
+                                            matrix[i][j] = col[i]
+                                        else:
+                                            matrix[i][j], prev_elem = prev_elem, matrix[i][j]
 
-                                if i == row_length - 1:
-                                    matrix[i].append(row_last_elem)
-                    if matrix_end:
-                        print("\nСтолбец вставлен в конец матрицы", end="")
-                print(f"\nНовая матрица:\n{print_matrix()}\n")
+                                    if i == row_length - 1:
+                                        matrix[i].append(row_last_elem)
+                        if matrix_end:
+                            print("\nСтолбец вставлен в конец матрицы", end="")
+                    else:
+                        for elem in col:
+                            matrix.append([elem])
+                print(f"\nНовая матрица:\n{print_matrix()}")
             else:
                 print("\nНельзя вставить столбец в это место матрицы!\n")
         elif operation == "5":
             # 5) Удалить столбец
-            m = check_input(input("Введите номер столбца матрицы: "))
+            m = check_input(input("\nВведите номер столбца матрицы: "))
             if m is None:
                 print("\nВводите корректные данные!\n")
                 continue
@@ -265,16 +276,25 @@ while True:
             if 0 <= m - 1 < len(matrix[0]):
                 if settings["del_col"]:
                     for i in range(len(matrix)):
-                        del matrix[i][m - 1]
+                        if len(matrix[0]) == 1:
+                            del matrix[0]
+                        else:
+                            del matrix[i][m - 1]
                 else:
                     row_length = len(matrix[0])
                     for i in range(len(matrix)):
                         for j in range(row_length):
-                            if m - 1 <= j < row_length - 1:
-                                matrix[i][j] = matrix[i][j + 1]
-                            if j == row_length - 1:
-                                del matrix[i][-1]
-                print(f"\nСтолбец удалён\nНовая матрица:\n{print_matrix()}\n")
+                            if len(matrix[0]) == 1:
+                                del matrix[0]
+                            else:
+                                if m - 1 <= j < row_length - 1:
+                                    matrix[i][j] = matrix[i][j + 1]
+                                if j == row_length - 1:
+                                    del matrix[i][-1]
+                if matrix:
+                    print(f"\nСтолбец удалён\nНовая матрица:\n{print_matrix()}")
+                else:
+                    print("\nСтолбец удалён\n")
             else:
                 print(f"\nСтолбца с таким номером нет! Возможные значения 1 - {len(matrix[0])}\n")
         elif operation == "6":
@@ -385,4 +405,7 @@ while True:
                 print(f"\nНовая матрица:\n{print_matrix()}")
         else:
             # 10) Вывести текущую матрицу
-            print(f"\n{print_matrix()}")
+            if matrix:
+                print(f"\nМатрица:\n{print_matrix()}")
+            else:
+                print("\nМатрица не задана\n")
