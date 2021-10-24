@@ -13,6 +13,7 @@
 # Группа ИУ7-16Б
 
 
+# Проверка строки на 'целочисленность'
 def check_input(raw_input):
     if raw_input:
         if "e" in raw_input and "" in raw_input.split("e"):
@@ -27,6 +28,7 @@ def check_input(raw_input):
         return None
 
 
+# Проверка списка на 'целочисленность'
 def check_list(array, limit):
     result_array = []
     array_length = len(array)
@@ -44,13 +46,15 @@ def check_list(array, limit):
     return result_array
 
 
-def print_matrix():
+# Генерация строки вывода матрицы
+def gen_matrix():
     matrix_print = ""
     for matrix_row in matrix:
         matrix_print += " ".join(map(str, matrix_row)) + "\n"
     return matrix_print
 
 
+# Словарь с настройками программы
 settings = {
     "add_row": True,
     "del_row": True,
@@ -61,8 +65,9 @@ settings = {
 # Основная матрица
 matrix = []
 
+# Цикл программы
 while True:
-    # Вывод меню
+    # Меню
     operation = input(
         "Выберите действие:\n"
         "1) Ввести матрицу\n"
@@ -89,10 +94,11 @@ while True:
     if operation == "0":
         exit()
 
-    # сли вызвана '*' команда - открыть настройки
+    # Если вызвана '*' команда - открыть настройки
     if operation == "*":
         print("\nНастройки:")
         while True:
+            # Меню настроек
             operation = input(
                 f"1) Добавление строки средствами python: {'✓' if settings['add_row'] else '⨯'}\n"
                 f"2) Удаление строки средствами python: {'✓' if settings['del_row'] else '⨯'}\n"
@@ -107,7 +113,7 @@ while True:
                 print("\nНет такой команды...\n")
                 continue
 
-            print()
+            print()  # Как же это плохо
 
             # Если вызвана '0' команда - выход из настроек
             if operation == "0":
@@ -122,7 +128,7 @@ while True:
                 settings["del_col"] = not settings["del_col"]
         continue
 
-    # Проверка на существование элементов в списке
+    # Проверка на существование матрицы и возможность применения на неё команд
     if not matrix and operation != "1" and operation != "2" and operation != "4" and operation != "10":
         print("\nДля работы команды матрица должна быть не пустой!\n")
     elif operation:
@@ -151,7 +157,7 @@ while True:
 
             if not is_crash:
                 matrix = temp_matrix
-                print(f"\nНовая матрица:\n{print_matrix()}")
+                print(f"\nНовая матрица:\n{gen_matrix()}")
         elif operation == "2":
             # 2) Добавить строку
             n = check_input(input("\nВведите номер строки матрицы: "))
@@ -187,7 +193,7 @@ while True:
                                     matrix[i], prev_elem = prev_elem, matrix[i]
                             if i == matrix_length - 1:
                                 matrix.append(matrix_last_elem)
-                print(f"\nНовая матрица:\n{print_matrix()}")
+                print(f"\nНовая матрица:\n{gen_matrix()}")
             else:
                 print("\nНельзя вставить строку в это место матрицы!\n")
         elif operation == "3":
@@ -208,7 +214,7 @@ while True:
                         if i == matrix_length - 1:
                             del matrix[-1]
                 if matrix:
-                    print(f"\nСтрока удалена\nНовая матрица:\n{print_matrix()}")
+                    print(f"\nСтрока удалена\nНовая матрица:\n{gen_matrix()}")
                 else:
                     print("\nСтрока удалена\n")
             else:
@@ -263,7 +269,7 @@ while True:
                     else:
                         for elem in col:
                             matrix.append([elem])
-                print(f"\nНовая матрица:\n{print_matrix()}")
+                print(f"\nНовая матрица:\n{gen_matrix()}")
             else:
                 print("\nНельзя вставить столбец в это место матрицы!\n")
         elif operation == "5":
@@ -292,7 +298,7 @@ while True:
                                 if j == row_length - 1:
                                     del matrix[i][-1]
                 if matrix:
-                    print(f"\nСтолбец удалён\nНовая матрица:\n{print_matrix()}")
+                    print(f"\nСтолбец удалён\nНовая матрица:\n{gen_matrix()}")
                 else:
                     print("\nСтолбец удалён\n")
             else:
@@ -344,7 +350,7 @@ while True:
                 print("\nПерестановка строк не нужна\n")
             else:
                 matrix[max_minus_row], matrix[min_minus_row] = matrix[min_minus_row], matrix[max_minus_row]
-                print(f"\nНовая матрица:\n{print_matrix()}")
+                print(f"\nНовая матрица:\n{gen_matrix()}")
         elif operation == "8":
             # 8) Найти столбец, где разница между модулями суммы отрицательных и положительных элементов минимальна
             result_col = []
@@ -402,10 +408,10 @@ while True:
             else:
                 for i in range(len(matrix)):
                     matrix[i][max_sum_col], matrix[i][min_sum_col] = matrix[i][min_sum_col], matrix[i][max_sum_col]
-                print(f"\nНовая матрица:\n{print_matrix()}")
+                print(f"\nНовая матрица:\n{gen_matrix()}")
         else:
             # 10) Вывести текущую матрицу
             if matrix:
-                print(f"\nМатрица:\n{print_matrix()}")
+                print(f"\nМатрица:\n{gen_matrix()}")
             else:
                 print("\nМатрица не задана\n")
