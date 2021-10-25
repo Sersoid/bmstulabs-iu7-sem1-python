@@ -15,7 +15,11 @@ def check_input(raw_input, input_type):
         if "e" in raw_input and "" in raw_input.split("e"):
             return None
         else:
-            processed_input = raw_input.replace("+", "", 1).replace("-", "", 1).replace("e", "", 1).replace(".", "", 1)
+            processed_input = ""
+            for j in raw_input:
+                if j not in ("+", "-", "e", "."):
+                    processed_input += j
+
             if processed_input.isdigit():
                 if input_type == int:
                     return input_type(float(raw_input))
