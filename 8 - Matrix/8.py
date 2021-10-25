@@ -220,7 +220,7 @@ while True:
                 if matrix:
                     print(f"\nСтрока удалена\nНовая матрица:\n{gen_matrix()}")
                 else:
-                    print("\nСтрока удалена\n")
+                    print("\nСтрока удалена\nВ матрице больше нет элементов\n")
             else:
                 print(f"\nСтроки с таким номером нет! Возможные значения 1 - {len(matrix)}\n")
         elif operation == "4":
@@ -304,7 +304,7 @@ while True:
                 if matrix:
                     print(f"\nСтолбец удалён\nНовая матрица:\n{gen_matrix()}")
                 else:
-                    print("\nСтолбец удалён\n")
+                    print("\nСтолбец удалён\nВ матрице больше нет элементов\n")
             else:
                 print(f"\nСтолбца с таким номером нет! Возможные значения 1 - {len(matrix[0])}\n")
         elif operation == "6":
