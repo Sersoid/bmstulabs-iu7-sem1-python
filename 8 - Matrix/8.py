@@ -286,7 +286,7 @@ while True:
             if 0 <= m - 1 < len(matrix[0]):
                 if settings["del_col"]:
                     for i in range(len(matrix)):
-                        if len(matrix[0]) == 1:
+                        if i >= len(matrix) or len(matrix[i]) == 1:
                             del matrix[0]
                         else:
                             del matrix[i][m - 1]
@@ -294,7 +294,7 @@ while True:
                     row_length = len(matrix[0])
                     for i in range(len(matrix)):
                         for j in range(row_length):
-                            if len(matrix[0]) == 1:
+                            if i >= len(matrix) or len(matrix[i]) == 1:
                                 del matrix[0]
                             else:
                                 if m - 1 <= j < row_length - 1:
