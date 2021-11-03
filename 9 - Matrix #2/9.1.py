@@ -2,8 +2,8 @@
 from math import sin
 
 # Ввод массивов
-D = list(map(int, input("D: ").split()))
-F = list(map(int, input("F: ").split()))
+D = list(map(float, input("D: ").split()))
+F = list(map(float, input("F: ").split()))
 
 A = []
 AV = []
