@@ -43,4 +43,5 @@ print("\nМатрица:")
 for matrix_row in A:
     print(*[format(i, ">9.5g") for i in matrix_row])
 
-print(f"\nAV: {AV}\nL: {L}")
+print(f"\nAV: {AV}"
+      f"\nL: {L}")
