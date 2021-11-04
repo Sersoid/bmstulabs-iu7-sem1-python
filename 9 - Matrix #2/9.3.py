@@ -4,6 +4,7 @@ n = int(input("Введите размер квадратной матрицы: 
 A = []
 
 # Основной блок программы
+print()
 for i in range(n):
     row = list(map(float, input(f"Введите {i + 1} строку матрицы: ").split()))
 

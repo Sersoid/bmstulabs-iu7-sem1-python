@@ -13,15 +13,16 @@ D = []
 R_array = []
 
 # Основной блок программы
+print()
 for i in range(n):
     row = list(map(float, input(f"Введите {i + 1} строку матрицы: ").split()))
 
     row_length = len(row)
-    if row_length < n:
-        for _ in range(n - row_length):
+    if row_length < m:
+        for _ in range(m - row_length):
             row.append(0)
-    elif row_length > n:
-        row = row[0:n]
+    elif row_length > m:
+        row = row[0:m]
 
     if i + 1 in I_array:
         R_array.append(max(row))
