@@ -2,7 +2,7 @@
 # from re import search
 
 
-def check_int(num: str) -> bool:
+def check_int(num: str) -> int:
     if num.isdigit():
         return int(num)
     else:
@@ -10,7 +10,7 @@ def check_int(num: str) -> bool:
         exit()
 
 
-def check_float(num: str) -> bool:
+def check_float(num: str) -> float:
     # Если можно использовать регулярные выражения:
     # if search(r"^[+-]?\d*\.?\d+([eE][+-]?\d+)?$", num):
     #     return float(num)
@@ -20,8 +20,7 @@ def check_float(num: str) -> bool:
 
     # Если можно использовать try/except:
     try:
-        float(num)
-        return True
+        return float(num)
     except ValueError:
         print(f"\nВводите корректные данные")
         exit()
@@ -37,8 +36,7 @@ def check_row(array: list, length: int) -> list:
         array = array[0:length]
 
     for i in range(length):
-        checked_float = check_float(array[i])
-        array[i] = checked_float
+        array[i] = check_float(array[i])
 
     return array
 
