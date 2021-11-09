@@ -1,18 +1,17 @@
-def check_row(array, length):
-    row_length = len(array)
-    if row_length < length:
-        for _ in range(length - row_length):
-            array.append(0)
-    elif row_length > length:
-        array = array[0:length]
+# Подсчитать в каждой строке матрицы D количество элементов, превышающих суммы элементов соответствующих строк
+# матрицы Z. Разместить эти количества в массиве G, умножить матрицу D на максимальный элемент массива G. Напечатать
+# матрицу D до и после преобразования, а также массив G.
+# Степнов Сергей
+# Группа ИУ7-16Б
 
-    return array
+# Импорт модулей
+from defs import check_int, check_row, print_matrix
 
-
-D_n = int(input("Введите кол-во строк матрицы D: "))
-D_m = int(input("Введите кол-во столбцов матрицы D: "))
-Z_n = int(input("Введите кол-во строк матрицы Z: "))
-Z_m = int(input("Введите кол-во столбцов матрицы Z: "))
+# Ввод данных
+D_n = check_int(input("Введите кол-во строк матрицы D: "))
+D_m = check_int(input("Введите кол-во столбцов матрицы D: "))
+Z_n = check_int(input("Введите кол-во строк матрицы Z: "))
+Z_m = check_int(input("Введите кол-во столбцов матрицы Z: "))
 
 if D_n > Z_n:
     print("\nКол-во строк матрицы Z должно быть больше или равно кол-ву строк матрицы D")
@@ -24,14 +23,15 @@ G = []
 
 print()
 for i in range(D_n):
-    row = check_row(list(map(float, input(f"Введите {i + 1} строку матрицы D: ").split())), D_m)
+    row = check_row(input(f"Введите {i + 1} строку матрицы D: ").split(), D_m, float)
     D.append(row)
 
 print()
 for i in range(Z_n):
-    row = check_row(list(map(float, input(f"Введите {i + 1} строку матрицы Z: ").split())), Z_m)
+    row = check_row(input(f"Введите {i + 1} строку матрицы Z: ").split(), Z_m, float)
     Z.append(row)
 
+# Основной блок программы
 for i in range(D_n):
     Z_n_sum = sum(Z[i])
     D_n_count = 0
@@ -42,16 +42,12 @@ for i in range(D_n):
 
     G.append(D_n_count)
 
-# Вывод
-print("\nМатрица D:")
-for matrix_row in D:
-    print(*[format(i, ">9.5g") for i in matrix_row])
-
 max_G = max(G)
 
-print("\nМатрица умноженная на максимальный элемент массива G:")
-for matrix_row in D:
-    print(*[format(i * max_G, ">9.5g") for i in matrix_row])
-
+# Вывод
+print(f"\nМатрица D:")
+print_matrix(D, float)
+print(f"\nПреобразованная матрица D:")
+print_matrix(D, float, max_G)
 print(f"\nМассив G: {G}"
-      f"\nМаксимальный элемент: {max_G}")
+      f"\nМаксимальный элемент массива G: {max_G}")
