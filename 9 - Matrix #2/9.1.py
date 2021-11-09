@@ -1,23 +1,25 @@
 # Импорт модулей
 from math import sin
+from defs import check_row, print_matrix_floats
 
-# Ввод массивов
-D = list(map(float, input("D: ").split()))
-F = list(map(float, input("F: ").split()))
+# Ввод данных
+D = input("D: ").split()
+D = check_row(D, len(D))
 
+F = input("F: ").split()
+F = check_row(F, len(F))
+
+# Основной блок программы
 A = []
 AV = []
 L = []
-max_j = len(D)
-max_k = len(F)
 
-# Основной блок программы
-for j in range(max_j):
+for j in range(len(D)):
     avg_sum = 0
     avg_divider = 0
     under_avg_count = 0
 
-    for k in range(max_k):
+    for k in range(len(F)):
         if len(A) <= j:
             A.append([])
 
@@ -28,20 +30,20 @@ for j in range(max_j):
 
         A[j].append(value)
 
-    avg_value = avg_sum / avg_divider
+    if avg_divider:
+        avg_value = avg_sum / avg_divider
+    else:
+        avg_value = None
 
     for i in A[j]:
-        if i < avg_value:
+        if avg_value is not None and i < avg_value:
             under_avg_count += 1
 
-    AV.append(format(avg_value, ".5g"))
-    L.append(under_avg_count)
+    AV.append("-" if avg_value is None else format(avg_value, ".5g"))
+    L.append(str(under_avg_count))
 
 # Вывод
-print("\nМатрица:")
-
-for matrix_row in A:
-    print(*[format(i, ">9.5g") for i in matrix_row])
-
-print(f"\nAV: {AV}"
-      f"\nL: {L}")
+print(f"\nМатрица:")
+print_matrix_floats(A)
+print(f"\nAV: {', '.join(AV)}"
+      f"\nL: {', '.join(L)}")
