@@ -8,13 +8,13 @@ from defs import check_int, check_row, print_matrix
 # Ввод данных
 n = check_int(input("Введите размер квадратной матрицы: "))
 
-# Основной блок программы
 A = []
 
 print()
 for i in range(n):
     A.append(check_row(input(f"Введите {i + 1} строку матрицы: ").split(), n))
 
+# Основной блок программы
 for i in range(n):
     for j in range(n):
         if i < j:
