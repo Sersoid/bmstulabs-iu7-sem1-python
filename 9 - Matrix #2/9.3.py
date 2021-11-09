@@ -3,7 +3,7 @@
 # Группа ИУ7-16Б
 
 # Импорт модулей
-from defs import check_int, check_row, print_matrix_floats
+from defs import check_int, check_row, print_matrix
 
 # Ввод данных
 n = check_int(input("Введите размер квадратной матрицы: "))
@@ -22,4 +22,4 @@ for i in range(n):
 
 # Вывод
 print("\nМатрица:")
-print_matrix_floats(A, str)
+print_matrix(A, str)

@@ -6,7 +6,7 @@
 
 # Импорт модулей
 from math import sin
-from defs import check_row, print_matrix_floats
+from defs import check_row, print_matrix
 
 # Ввод данных
 D = input("D: ").split()
@@ -50,6 +50,6 @@ for j in range(len(D)):
 
 # Вывод
 print(f"\nМатрица:")
-print_matrix_floats(A, float)
+print_matrix(A, float)
 print(f"\nAV: {', '.join(AV)}"
       f"\nL: {', '.join(L)}")

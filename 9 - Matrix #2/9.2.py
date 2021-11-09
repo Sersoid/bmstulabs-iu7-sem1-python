@@ -3,7 +3,7 @@
 # Группа ИУ7-16Б
 
 # Импорт модулей
-from defs import check_int, check_row, print_matrix_floats
+from defs import check_int, check_row, print_matrix
 
 # Ввод данных
 n = check_int(input("Введите размер квадратной матрицы: "))
@@ -29,6 +29,6 @@ for i in range(n):
 
 # Вывод
 print(f"\nМатрица:")
-print_matrix_floats(A, float)
+print_matrix(A, float)
 print(f"\nМаксимальное значение над главной диагональю: {'-' if max_value is None else format(max_value, '.5g')}"
       f"\nМинимальное значение под главной диагональю: {'-' if max_value is None else format(min_value, '.5g')}")

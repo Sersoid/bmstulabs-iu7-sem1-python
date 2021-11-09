@@ -45,10 +45,10 @@ def check_row(array: list, length: int, elem_type: type = str) -> list:
     return array
 
 
-def print_matrix_floats(matrix: list, elem_type: type = str, multiplier: int = 1) -> None:
+def print_matrix(matrix: list, elem_type: type = str, multiplier: int = 1) -> None:
     for matrix_row in matrix:
         if elem_type == str:
             max_length = len(max(matrix_row, key=lambda i: len(i)))
-            print(*[format(elem, f">{max_length + 1}") for elem in matrix_row])
+            print(*[format(elem, f">{max_length}") for elem in matrix_row])
         else:
             print(*[format(elem * multiplier, ">13.5g") for elem in matrix_row])
