@@ -1,21 +1,21 @@
-# Ввод данных
-n = int(input("Введите размер квадратной матрицы: "))
+# Найти максимальное значение над главной диагональю и минимальное - под побочной диагональю
+# Степнов Сергей
+# Группа ИУ7-16Б
 
+# Импорт модулей
+from defs import check_int, check_row, print_matrix_floats
+
+# Ввод данных
+n = check_int(input("Введите размер квадратной матрицы: "))
+
+# Основной блок программы
 A = []
 max_value = None
 min_value = None
 
-# Основной блок программы
 print()
 for i in range(n):
-    row = list(map(float, input(f"Введите {i + 1} строку матрицы: ").split()))
-
-    row_length = len(row)
-    if row_length < n:
-        for _ in range(n - row_length):
-            row.append(0)
-    elif row_length > n:
-        row = row[0:n]
+    row = check_row(input(f"Введите {i + 1} строку матрицы: ").split(), n, float)
 
     for j in range(n):
         if i < j:
@@ -28,10 +28,7 @@ for i in range(n):
     A.append(row)
 
 # Вывод
-print("\nМатрица:")
-
-for matrix_row in A:
-    print(*[format(i, ">9.5g") for i in matrix_row])
-
-print(f"\nМаксимальное значение над главной диагональю: {max_value}"
-      f"\nМинимальное значение под главной диагональю: {min_value}")
+print(f"\nМатрица:")
+print_matrix_floats(A, float)
+print(f"\nМаксимальное значение над главной диагональю: {'-' if max_value is None else format(max_value, '.5g')}"
+      f"\nМинимальное значение под главной диагональю: {'-' if max_value is None else format(min_value, '.5g')}")

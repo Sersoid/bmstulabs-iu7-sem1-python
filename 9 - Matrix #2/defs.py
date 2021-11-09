@@ -26,7 +26,7 @@ def check_float(num: str) -> float:
         exit()
 
 
-def check_row(array: list, length: int) -> list:
+def check_row(array: list, length: int, elem_type: type = str) -> list:
     row_length = len(array)
 
     if row_length < length:
@@ -35,12 +35,20 @@ def check_row(array: list, length: int) -> list:
     elif row_length > length:
         array = array[0:length]
 
-    for i in range(length):
-        array[i] = check_float(array[i])
+    if elem_type != str:
+        for i in range(length):
+            if elem_type == int:
+                array[i] = check_int(array[i])
+            elif elem_type == float:
+                array[i] = check_float(array[i])
 
     return array
 
 
-def print_matrix_floats(matrix: list, multiplier: int = 1) -> None:
+def print_matrix_floats(matrix: list, elem_type: type = str, multiplier: int = 1) -> None:
     for matrix_row in matrix:
-        print(*[format(elem * multiplier, ">13.5g") for elem in matrix_row])
+        if elem_type == str:
+            max_length = len(max(matrix_row, key=lambda i: len(i)))
+            print(*[format(elem, f">{max_length + 1}") for elem in matrix_row])
+        else:
+            print(*[format(elem * multiplier, ">13.5g") for elem in matrix_row])
