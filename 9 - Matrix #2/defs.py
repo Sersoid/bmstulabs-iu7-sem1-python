@@ -27,6 +27,7 @@ def check_float(num: str) -> float:
 
 
 def check_row(array: list, length: int, elem_type: type = str) -> list:
+    length = len(array) if length == -1 else length
     row_length = len(array)
 
     if row_length < length:

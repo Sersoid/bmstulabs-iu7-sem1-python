@@ -13,8 +13,7 @@ A = []
 
 print()
 for i in range(n):
-    row = check_row(input(f"Введите {i + 1} строку матрицы: ").split(), n)
-    A.append(row)
+    A.append(check_row(input(f"Введите {i + 1} строку матрицы: ").split(), n))
 
 # Повороты матрицы
 # B - поворот по часовой стрелке

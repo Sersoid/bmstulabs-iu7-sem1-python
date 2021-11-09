@@ -23,13 +23,11 @@ G = []
 
 print()
 for i in range(D_n):
-    row = check_row(input(f"Введите {i + 1} строку матрицы D: ").split(), D_m, float)
-    D.append(row)
+    D.append(check_row(input(f"Введите {i + 1} строку матрицы D: ").split(), D_m, float))
 
 print()
 for i in range(Z_n):
-    row = check_row(input(f"Введите {i + 1} строку матрицы Z: ").split(), Z_m, float)
-    Z.append(row)
+    Z.append(check_row(input(f"Введите {i + 1} строку матрицы Z: ").split(), Z_m, float))
 
 # Основной блок программы
 for i in range(D_n):
