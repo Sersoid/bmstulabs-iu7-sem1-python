@@ -1,30 +1,29 @@
+# Дана матрица символов. Заменить в ней все гласные английские буквы на точки.
+# Степнов Сергей
+# Группа ИУ7-16Б
+
+# Импорт модулей
+from defs import check_int, check_row, print_matrix
+
 # Ввод
-n = int(input("Введите кол-во строк матрицы: "))
-m = int(input("Введите кол-во столбцов матрицы: "))
+n = check_int(input("Введите кол-во строк матрицы: "))
+m = check_int(input("Введите кол-во столбцов матрицы: "))
 
 A = []
 
 # Основной блок программы
 print()
 for i in range(n):
-    row = input(f"Введите {i + 1} строку матрицы: ").split()
-
-    row_length = len(row)
-
-    if row_length < n:
-        for _ in range(n - row_length):
-            row.append(" ")
-    elif row_length > n:
-        row = row[0:n]
+    row = check_row(input(f"Введите {i + 1} строку матрицы: ").split(), m, str)
 
     for j in range(m):
-        row[j] = row[j][0]
-        if row[j] in ("a", "e", "i", "o", "u", "y", "A", "E", "I", "O", "U", "Y"):
+        if row[j][0] in ("a", "e", "i", "o", "u", "y", "A", "E", "I", "O", "U", "Y"):
             row[j] = "."
+        else:
+            row[j] = row[j][0]
 
     A.append(row)
 
 # Вывод
-print("\nМатрица D:")
-for matrix_row in A:
-    print(*[f"'{i}'" for i in matrix_row])
+print("\nМатрица:")
+print_matrix(A)

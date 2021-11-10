@@ -47,9 +47,17 @@ def check_row(array: list, length: int, elem_type: type = str) -> list:
 
 
 def print_matrix(matrix: list, elem_type: type = str, multiplier: int = 1) -> None:
+    max_length = 0
     for matrix_row in matrix:
         if elem_type == str:
-            max_length = len(max(matrix_row, key=lambda i: len(i)))
-            print(*[format(elem, f">{max_length}") for elem in matrix_row])
+            max_row_length = len(max(matrix_row, key=lambda i: len(i)))
         else:
-            print(*[format(elem * multiplier, ">13.5g") for elem in matrix_row])
+            max_row_length = len(format(max(matrix_row, key=lambda i: len(format(i, ".5g"))), ".5g"))
+
+        if max_row_length > max_length:
+            max_length = max_row_length
+    for matrix_row in matrix:
+        if elem_type == str:
+            print(*[format(f"'{elem}'", f">{max_length + 2}") for elem in matrix_row])
+        else:
+            print(*[format(elem * multiplier, f">{max_length}.5g") for elem in matrix_row])

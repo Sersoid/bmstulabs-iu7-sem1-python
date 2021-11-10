@@ -22,4 +22,4 @@ for i in range(n):
 
 # Вывод
 print("\nМатрица:")
-print_matrix(A, str)
+print_matrix(A)
