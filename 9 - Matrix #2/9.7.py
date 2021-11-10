@@ -9,9 +9,9 @@ from defs import check_int, check_row, print_matrix
 n = check_int(input("Введите кол-во строк матрицы: "))
 m = check_int(input("Введите кол-во столбцов матрицы: "))
 
+# Основной блок программы
 A = []
 
-# Основной блок программы
 print()
 for i in range(n):
     row = check_row(input(f"Введите {i + 1} строку матрицы: ").split(), m, str)

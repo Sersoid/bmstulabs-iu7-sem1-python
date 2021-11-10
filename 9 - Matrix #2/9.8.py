@@ -1,23 +1,17 @@
-def check_row(array, length):
-    row_length = len(array)
-    if row_length < length:
-        for _ in range(length - row_length):
-            array.append(0)
-    elif row_length > length:
-        array = array[0:length]
+# Сформировать матрицу C путём построчного перемножения матриц A и B одинаковой размерности (элементы в i-й строке
+# матрицы A умножаются на соответствующие элементы в i-й строке матрицы B), потом сложить все элементы в столбцах
+# матрицы C и записать их в массив V.
+# Степнов Сергей
+# Группа ИУ7-16Б
 
-    return array
-
-
-def print_matrix(matrix):
-    for matrix_row in matrix:
-        print(*[format(elem, ">9.5g") for elem in matrix_row])
-
+# Импорт модулей
+from defs import check_int, check_row, print_matrix
 
 # Ввод
-n = int(input("Введите кол-во строк матрицы: "))
-m = int(input("Введите кол-во столбцов матрицы: "))
+n = check_int(input("Введите кол-во строк матрицы: "))
+m = check_int(input("Введите кол-во столбцов матрицы: "))
 
+# Основной блок программы
 A = []
 B = []
 C = []
@@ -25,12 +19,11 @@ V = []
 
 print()
 for i in range(n):
-    row = check_row(list(map(float, input(f"Введите {i + 1} строку матрицы A: ").split())), m)
-    A.append(row)
+    A.append(check_row(input(f"Введите {i + 1} строку матрицы A: ").split(), m, float))
 
 print()
 for i in range(n):
-    row = check_row(list(map(float, input(f"Введите {i + 1} строку матрицы B: ").split())), m)
+    row = check_row(input(f"Введите {i + 1} строку матрицы B: ").split(), m, float)
     B.append(row)
     C.append([])
     for j in range(m):
@@ -44,12 +37,9 @@ for j in range(m):
 
 # Вывод
 print("\nМатрица A:")
-print_matrix(A)
-
+print_matrix(A, float)
 print("\nМатрица B:")
-print_matrix(B)
-
+print_matrix(B, float)
 print("\nМатрица C:")
-print_matrix(C)
-
-print(f"\nV: {V}")
+print_matrix(C, float)
+print(f"\nV: {', '.join([format(i, '.5g') for i in V])}")
