@@ -12,7 +12,7 @@ def check_int(num: str) -> int:
 
 def check_float(num: str) -> float:
     # Если можно использовать регулярные выражения:
-    # if search(r"^[+-]?\d*\.?\d+([eE][+-]?\d+)?$", num):
+    # if search(r"[+-]?\d*\.?\d+([eE][+-]?\d+)?", num):
     #     return float(num)
     # else:
     #     print(f"\nВводите корректные данные")
@@ -32,7 +32,7 @@ def check_row(array: list, length: int, elem_type: type = str) -> list:
 
     if row_length < length:
         for _ in range(length - row_length):
-            array.append("0")
+            array.append("" if elem_type == str else "0")
     elif row_length > length:
         array = array[0:length]
 
@@ -49,10 +49,11 @@ def check_row(array: list, length: int, elem_type: type = str) -> list:
 def print_matrix(matrix: list, elem_type: type = str, multiplier: int = 1) -> None:
     max_length = 0
     for matrix_row in matrix:
-        if elem_type == str:
-            max_row_length = len(max(matrix_row, key=lambda i: len(i)))
-        else:
-            max_row_length = len(format(max(matrix_row, key=lambda i: len(format(i, ".5g"))), ".5g"))
+        max_row_length = 0
+        for i in matrix_row:
+            elem_length = len(i) if elem_type == str else len(format(i, ".5g"))
+            if max_row_length < elem_length:
+                max_row_length = elem_length
 
         if max_row_length > max_length:
             max_length = max_row_length
