@@ -15,21 +15,10 @@
 
 # Проверка строки на 'целочисленность'
 def check_input(raw_input):
-    if raw_input:
-        if "e" in raw_input and "" in raw_input.split("e"):
-            return None
-        else:
-            processed_input = ""
-            for g in raw_input:
-                if g not in ("+", "-", "e", "."):
-                    processed_input += g
-
-            if processed_input.isdigit():
-                return int((float(raw_input)))
-            else:
-                return None
-    else:
-        return None
+    split_input = raw_input.split("e")
+    if raw_input.isdigit() or (len(split_input) == 2 and split_input[1].replace("+", "").isdigit()):
+        return int(raw_input)
+    return None
 
 
 # Проверка списка на 'целочисленность'
