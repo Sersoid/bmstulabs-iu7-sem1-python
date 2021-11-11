@@ -40,12 +40,16 @@ for i in range(D_n):
 
     G.append(D_n_count)
 
-max_G = max(G)
-
 # Вывод
 print(f"\nМатрица D:")
 print_matrix(D, float)
+
+max_G = max(G)
+for i in range(D_n):
+    for j in range(D_m):
+        D[i][j] *= max_G
+
 print(f"\nПреобразованная матрица D:")
-print_matrix(D, float, max_G)
+print_matrix(D, float)
 print(f"\nМассив G: {G}"
       f"\nМаксимальный элемент массива G: {max_G}")

@@ -21,7 +21,7 @@ for i in range(n):
         if i < j:
             if max_value is None or row[j] > max_value:
                 max_value = row[j]
-        elif i > j:
+        if j > n - i - 1:
             if min_value is None or row[j] < min_value:
                 min_value = row[j]
 
@@ -31,4 +31,4 @@ for i in range(n):
 print(f"\nМатрица:")
 print_matrix(A, float)
 print(f"\nМаксимальное значение над главной диагональю: {'-' if max_value is None else format(max_value, '.5g')}"
-      f"\nМинимальное значение под главной диагональю: {'-' if max_value is None else format(min_value, '.5g')}")
+      f"\nМинимальное значение под побочной диагональю: {'-' if min_value is None else format(min_value, '.5g')}")

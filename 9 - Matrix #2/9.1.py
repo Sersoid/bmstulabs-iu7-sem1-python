@@ -9,8 +9,8 @@ from math import sin
 from defs import check_row, print_matrix
 
 # Ввод данных
-D = check_row(input("D: ").split(), -1, float)
-F = check_row(input("F: ").split(), -1, float)
+D = check_row(input("Введите массив D: ").split(), -1, float)
+F = check_row(input("Введите массив F: ").split(), -1, float)
 
 # Основной блок программы
 A = []
