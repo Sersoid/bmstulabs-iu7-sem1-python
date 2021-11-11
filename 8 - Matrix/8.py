@@ -16,8 +16,9 @@
 # Проверка строки на 'целочисленность'
 def check_input(raw_input):
     split_input = raw_input.split("e")
-    if raw_input.isdigit() or (len(split_input) == 2 and split_input[1].replace("+", "").isdigit()):
-        return int(raw_input)
+    if raw_input.replace("+", "").replace("-", "").isdigit() or \
+            (len(split_input) == 2 and split_input[1].replace("+", "").isdigit()):
+        return int(float(raw_input))
     return None
 
 
@@ -43,7 +44,7 @@ def check_list(array, limit):
 def gen_matrix():
     matrix_print = ""
     for matrix_row in matrix:
-        matrix_print += " ".join(map(str, matrix_row)) + "\n"
+        matrix_print += " ".join(format(matrix_elem, f">10.5g") for matrix_elem in matrix_row) + "\n"
     return matrix_print
 
 
@@ -61,7 +62,7 @@ matrix = []
 # Цикл программы
 while True:
     # Меню
-    operation = input(
+    operation = check_input(input(
         "Выберите действие:\n"
         "1) Ввести матрицу\n"
         "2) Добавить строку\n"
@@ -73,59 +74,59 @@ while True:
         "8) Найти столбец, где разница между модулями суммы отрицательных и положительных элементов минимальна\n"
         "9) Переставить местами столбцы с максимальной и минимальной суммой элементов\n"
         "10) Вывести текущую матрицу\n\n"
-        "*) Настройки\n"
+        "-1) Настройки\n"
         "0) Выйти из программы\n"
         ">>> "
-    )
+    ))
 
     # Проверка на дурака
-    if operation != "*" and (not operation.isdigit() or not 0 <= int(operation) <= 10):
+    if operation is None or not -1 <= operation <= 10:
         print("\nНет такой команды...\n")
         continue
 
     # Если вызвана '0' команда - завершение программы
-    if operation == "0":
+    if operation == 0:
         exit()
 
     # Если вызвана '*' команда - открыть настройки
-    if operation == "*":
+    if operation == -1:
         print("\nНастройки:")
         while True:
             # Меню настроек
-            operation = input(
+            operation = check_input(input(
                 f"1) Добавление строки средствами python: {'✓' if settings['add_row'] else '⨯'}\n"
                 f"2) Удаление строки средствами python: {'✓' if settings['del_row'] else '⨯'}\n"
                 f"3) Добавление столбца средствами python: {'✓' if settings['add_col'] else '⨯'}\n"
                 f"4) Удаление столбца средствами python: {'✓' if settings['del_col'] else '⨯'}\n"
                 "0) Выйти из настроек\n"
                 "* > "
-            )
+            ))
 
             # Проверка на дурака
-            if not operation.isdigit() or not 0 <= int(operation) <= 4:
+            if operation is None or not 0 <= operation <= 4:
                 print("\nНет такой команды...\n")
                 continue
 
             print()  # Как же это плохо
 
             # Если вызвана '0' команда - выход из настроек
-            if operation == "0":
+            if operation == 0:
                 break
-            elif operation == "1":
+            elif operation == 1:
                 settings["add_row"] = not settings["add_row"]
-            elif operation == "2":
+            elif operation == 2:
                 settings["del_row"] = not settings["del_row"]
-            elif operation == "3":
+            elif operation == 3:
                 settings["add_col"] = not settings["add_col"]
             else:
                 settings["del_col"] = not settings["del_col"]
         continue
 
     # Проверка на существование матрицы и возможность применения на неё команд
-    if not matrix and operation != "1" and operation != "2" and operation != "4" and operation != "10":
+    if not matrix and operation != 1 and operation != 2 and operation != 4 and operation != 10:
         print("\nДля работы команды матрица должна быть не пустой!\n")
     elif operation:
-        if operation == "1":
+        if operation == 1:
             # 1) Ввести матрицу
             n = check_input(input("\nВведите количество строк матрицы: "))
             if n is None:
@@ -140,18 +141,18 @@ while True:
             is_crash = False
 
             for i in range(n):
-                row = check_list(input("Введите строку матрицы: ").split(), m)
-                if row:
-                    temp_matrix.append(row)
-                else:
-                    print("\nВводите корректные данные!\n")
-                    is_crash = True
-                    continue
+                if not is_crash:
+                    row = check_list(input("Введите строку матрицы: ").split(), m)
+                    if row:
+                        temp_matrix.append(row)
+                    else:
+                        print("\nВводите корректные данные!\n")
+                        is_crash = True
 
             if not is_crash:
                 matrix = temp_matrix
                 print(f"\nНовая матрица:\n{gen_matrix()}")
-        elif operation == "2":
+        elif operation == 2:
             # 2) Добавить строку
             n = check_input(input("\nВведите номер строки матрицы: "))
             if n is None:
@@ -189,7 +190,7 @@ while True:
                 print(f"\nНовая матрица:\n{gen_matrix()}")
             else:
                 print("\nНельзя вставить строку в это место матрицы!\n")
-        elif operation == "3":
+        elif operation == 3:
             # 3) Удалить строку
             n = check_input(input("\nВведите номер строки матрицы: "))
             if n is None:
@@ -212,7 +213,7 @@ while True:
                     print("\nСтрока удалена\nВ матрице больше нет элементов\n")
             else:
                 print(f"\nСтроки с таким номером нет! Возможные значения 1 - {len(matrix)}\n")
-        elif operation == "4":
+        elif operation == 4:
             # 4) Добавить столбец
             m = check_input(input("\nВведите номер столбца матрицы: "))
             if m is None:
@@ -265,7 +266,7 @@ while True:
                 print(f"\nНовая матрица:\n{gen_matrix()}")
             else:
                 print("\nНельзя вставить столбец в это место матрицы!\n")
-        elif operation == "5":
+        elif operation == 5:
             # 5) Удалить столбец
             m = check_input(input("\nВведите номер столбца матрицы: "))
             if m is None:
@@ -296,7 +297,7 @@ while True:
                     print("\nСтолбец удалён\nВ матрице больше нет элементов\n")
             else:
                 print(f"\nСтолбца с таким номером нет! Возможные значения 1 - {len(matrix[0])}\n")
-        elif operation == "6":
+        elif operation == 6:
             # 6) Найти строку, имеющую наименьшее количество чётных элементов
             result_row = None
             min_elems = 0
@@ -316,8 +317,9 @@ while True:
 
                 temp_max_elems = 0
 
-            print(f"\nСтрока с наименьшим количеством чётных элементов:\n{' '.join(map(str, result_row))}\n")
-        elif operation == "7":
+            print(f"\nСтрока с наименьшим количеством чётных элементов:\n"
+                  f"{' '.join(format(elem, f'>10.5g') for elem in result_row)}\n")
+        elif operation == 7:
             # 7) Переставить местами строки с наибольшим и наименьшим количеством отрицательных элементов
             max_minus_row = None
             min_minus_row = None
@@ -344,7 +346,7 @@ while True:
             else:
                 matrix[max_minus_row], matrix[min_minus_row] = matrix[min_minus_row], matrix[max_minus_row]
                 print(f"\nНовая матрица:\n{gen_matrix()}")
-        elif operation == "8":
+        elif operation == 8:
             # 8) Найти столбец, где разница между модулями суммы отрицательных и положительных элементов минимальна
             result_col = []
             temp_result_col = []
@@ -368,10 +370,10 @@ while True:
                 plus_sum = 0
                 minus_sum = 0
 
-            output = '\n'.join(map(str, result_col))
+            output = "\n".join(format(elem, f'>10.5g') for elem in result_col)
             print(f"\nСтолбец, где разница между модулями суммы отрицательных и положительных элементов минимальна:\n"
                   f"{output}\n")
-        elif operation == "9":
+        elif operation == 9:
             # 9) Переставить местами столбцы с максимальной и минимальной суммой элементов
             max_sum_col = None
             min_sum_col = None
