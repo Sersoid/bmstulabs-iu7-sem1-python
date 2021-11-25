@@ -2,6 +2,10 @@
 # Степнов Сергей
 # Группа ИУ7-16Б
 
+# Импорт модулей
+import re
+
+
 # Проверки на дурака
 def check_int(num: str) -> int:
     if num.isdigit():
@@ -12,9 +16,9 @@ def check_int(num: str) -> int:
 
 
 def check_float(num: str) -> float:
-    try:
+    if re.search(r"[+-]?\d*\.?\d+([eE][+-]?\d+)?", num):
         return float(num)
-    except ValueError:
+    else:
         print(f"\nВводите корректные данные")
         exit()
 
@@ -40,7 +44,7 @@ def integral_value_3_8(a: float, b: float, partitions: int) -> float:
     if partitions % 3 == 0:
         h = (b - a) / partitions
         partitions_sum = 0
-        for i in range(partitions):
+        for i in range(partitions + 1):
             if i == 0 or i == partitions - 1:
                 partitions_sum += f((a + (i * h)))
             elif i % 3 == 0:
@@ -50,6 +54,7 @@ def integral_value_3_8(a: float, b: float, partitions: int) -> float:
         return 3 / 8 * h * partitions_sum
     else:
         return -1.0
+
 
 # Ввод
 start = check_float(input("Введите начало отрезка: "))
