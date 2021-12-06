@@ -1,3 +1,7 @@
+# Реализовать любую сортировку
+# Степнов Сергей
+# Группа ИУ7-16Б
+
 def bubble_sort(array):
     array_len = len(array)
     for i in range(1, array_len):

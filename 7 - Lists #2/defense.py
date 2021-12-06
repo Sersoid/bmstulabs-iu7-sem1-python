@@ -1,3 +1,7 @@
+# Внутри введённых предложений найти числа и вывести их
+# Степнов Сергей
+# Группа ИУ7-16Б
+
 def check(raw_input):
     if raw_input:
         if raw_input[0] == "e" and not raw_input[1:].isdigit() or \
@@ -35,8 +39,6 @@ for i in range(n):
 
     if new_string:
         string_parts.append(new_string)
-
-    # print(string_parts)
 
     for elem in string_parts:
         new_elem = check(elem)
