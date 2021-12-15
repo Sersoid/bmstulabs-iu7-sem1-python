@@ -37,3 +37,25 @@ def matrix_transposition(matrix: typing.Union[typing.List[list]]) -> typing.List
             matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
 
     return matrix
+
+
+def matrix_sum_dif(matrix1: typing.Union[typing.List[list]], matrix2: typing.Union[typing.List[list]],
+                   is_sum: bool = True) -> typing.List[list]:
+    row_count1, col_count1 = matrix_size(matrix1)
+    row_count2, col_count2 = matrix_size(matrix2)
+    if row_count1 != row_count2 or col_count1 != col_count2:
+        raise Exception("")
+
+    for i in range(row_count1):
+        for j in range(col_count1):
+            matrix1[i][j] += matrix2[i][j] if is_sum else -matrix2[i][j]
+
+    return matrix1
+
+
+def matrix_sum(matrix1: typing.Union[typing.List[list]], matrix2: typing.Union[typing.List[list]]) -> typing.List[list]:
+    return matrix_sum_dif(matrix1, matrix2)
+
+
+def matrix_dif(matrix1: typing.Union[typing.List[list]], matrix2: typing.Union[typing.List[list]]) -> typing.List[list]:
+    return matrix_sum_dif(matrix1, matrix2, False)
