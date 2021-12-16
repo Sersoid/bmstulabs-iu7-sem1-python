@@ -19,32 +19,57 @@ from typing import Union
 from labutils.checks import is_int
 
 
-def parse_type(db_type: str) -> Union[type, None]:
-    if db_type == "int":
-        return int
-    elif db_type == "float":
-        return float
-    elif db_type == "str":
-        return str
-    elif db_type == "bool":
-        return bool
+def parse_type(db_type: str) -> Union[tuple[type, str], None]:
+    if db_type == "int" or db_type == "q":
+        return int, "q"
+    elif db_type == "float" or db_type == "d":
+        return float, "d"
+    elif db_type == "str" or db_type == "s":
+        return str, "s"
+    elif db_type == "bool" or db_type == "?":
+        return bool, "?"
     else:
         return None
 
 
-def parse_line(db_line: bytes) -> (list, int):
+def parse_types(db_types: list) -> Union[list, None]:
+    parsed_db_types = []
+
+    for db_type in db_types:
+        db_type = parse_type(db_type)
+        if db_type is not None:
+            parsed_db_types.append(db_type)
+        else:
+            print("\nБаза имеет неизвестный тип данных!\n")
+            return None
+
+    return parsed_db_types
+
+
+def parse_line(db_line: bytes, db_types: list) -> (list, int):
     db_line = db_line.strip()
     db_split_line = db_line.split(b";")
-    db_types = db_split_line[0]
-    db_line_data = b";".join(db_split_line[1:])
 
     try:
-        db_line_data = struct.unpack(db_types, db_line_data)
         decoded_db_line_data = []
-        element_max_len = 0
 
-        for db_value in db_line_data:
-            decoded_db_line_data.append(db_value if type(db_value) != bytes else db_value.decode())
+        for i in range(len(db_split_line)):
+            if db_types[i][0] == int:
+                db_value_format = "56xq"
+            elif db_types[i][0] == float:
+                db_value_format = "56xd"
+            elif db_types[i][0] == str:
+                db_value_format = "64s"
+            else:
+                db_value_format = "63x?"
+
+            db_value = (struct.unpack(db_value_format, db_split_line[i]))[0]
+            if db_types[i][0] == str:
+                db_value = db_value.replace(b"\x00", b"").decode()
+
+            decoded_db_line_data.append(db_value)
+
+        element_max_len = 0
 
         for db_value in decoded_db_line_data:
             value_len = len(str(db_value)) if type(db_value) != bool else (4 if db_value else 5)
@@ -61,13 +86,19 @@ def create_db(db_file: str) -> None:
     if db_headers == [""]:
         print("У таблицы должен быть хотя бы один столбец\n")
     else:
-        db_headers = [db_value.encode() for db_value in db_headers]
-        db_headers_types = ""
-        for db_value in db_headers:
-            db_headers_types += f"{len(db_value)}s"
+        db_types = []
+
+        for db_header in db_headers:
+            db_type = input(f"Введите тип '{db_header}' новой записи (int, float, str или bool): ")
+            db_type_check = parse_type(db_type)
+            if db_type_check is not None:
+                db_types.append(db_type_check[1])
+            else:
+                print("\nВведён неизвестный тип данных!\nНе удалось создать базу\n")
+                return
 
         with open(db_file, "wb") as new_db:
-            new_db.write((db_headers_types + ";").encode() + struct.pack(db_headers_types, *db_headers))
+            new_db.write(f"{';'.join(db_types)}\n{';'.join(db_headers)}".encode())
 
         print(f"База данных '{db_file}' создана!\n")
 
@@ -99,6 +130,7 @@ def print_footer(db_total_max_len: int, db_border: int, db_table_size: int) -> N
 
 
 def print_table(view_num: bool = False) -> int:
+    db_types = None
     db_headers = None
     db_table_size = None
     db_records_count = 0
@@ -106,28 +138,35 @@ def print_table(view_num: bool = False) -> int:
     with open(current_db, "rb") as db:
         db_total_max_len = 0
         for db_line in db:
-            if db_headers is None:
-                db_headers, db_max_len = parse_line(db_line)
-                db_table_size = len(db_headers)
+            if db_types is None:
+                db_types = parse_types(db_line.strip().decode().split(";"))
             else:
-                _, db_max_len = parse_line(db_line)
-                db_records_count += 1
-            db_total_max_len = max(db_total_max_len, db_max_len)
+                if db_headers is None:
+                    db_headers = db_line.strip().decode().split(";")
+                    db_max_len = max([len(i) for i in db_headers])
+                    db_table_size = len(db_headers)
+                else:
+                    _, db_max_len = parse_line(db_line, db_types)
+                    db_records_count += 1
+                db_total_max_len = max(db_total_max_len, db_max_len)
 
     db_border = len(str(db_records_count)) if view_num else -1
 
     print_header(db_headers, db_total_max_len, db_border, db_table_size)
 
+    is_db_types = True
     is_db_header = True
     with open(current_db, "rb") as db:
         db_line_index = 0
         for db_line in db:
-            if is_db_header:
+            if is_db_types:
+                is_db_types = False
+            elif is_db_header:
                 is_db_header = False
-                continue
-            db_line, _ = parse_line(db_line)
-            print_line(db_line, db_total_max_len, db_table_size, db_border, db_line_index)
-            db_line_index += 1
+            else:
+                db_line, _ = parse_line(db_line, db_types)
+                print_line(db_line, db_total_max_len, db_table_size, db_border, db_line_index)
+                db_line_index += 1
 
     print_footer(db_total_max_len, db_border, db_table_size)
 
@@ -202,56 +241,49 @@ while True:
     elif operation == "4":
         # 4) Добавить запись в базу данных
         if current_db:
+            types = None
             headers = None
 
             with open(current_db, "rb") as db:
-                if headers is None:
-                    headers, _ = parse_line(db.readline())
+                for line in db:
+                    if types is None:
+                        types = parse_types(line.strip().decode().split(";"))
+                    elif headers is None:
+                        headers = line.strip().decode().split(";")
 
-            new_record_types = ""
-            new_record_values = []
+            record_values = []
             is_error = False
             print()
 
             for param in range(len(headers)):
-                record_type = input(f"Введите тип '{headers[param]}' новой записи (int, float, str или bool): ")
-                record_type = parse_type(record_type)
-                if record_type is None:
-                    print("Введён неизвестный тип данных!\n")
-                    is_error = True
-                    break
-
-                record_value = input(f"Введите значение '{headers[param]}' новой записи: ")
+                record_value = input(f"Введите значение '{headers[param]}' новой записи ({types[param][0]}): ")
                 try:
-                    record_value = record_type(record_value) if record_type != str \
-                        else record_type(record_value).encode()
+                    record_value = types[param][0](record_value)
                 except ValueError:
                     print("Введённое значение не соответствует типу записи!")
                     is_error = True
                     break
 
-                if record_type == int:
-                    new_record_types += "56xq"
-                elif record_type == float:
-                    new_record_types += "56xd"
-                elif record_type == str:
+                if types[param][0] == int:
+                    record_type = "56xq"
+                elif types[param][0] == float:
+                    record_type = "56xd"
+                elif types[param][0] == str:
+                    record_value = record_value.encode()
                     record_len = len(record_value)
                     if record_len >= 64:
                         record_value = record_value[:64]
-                        new_record_types += "64s"
+                        record_type = "64s"
                     else:
-                        new_record_types += f"{64 - record_len}x{record_len}s"
-                elif record_type == bool:
-                    new_record_types += "63x?"
+                        record_type = f"{64 - record_len}x{record_len}s"
+                else:
+                    record_type = "63x?"
 
-                new_record_values.append(record_value)
+                record_values.append(struct.pack(record_type, record_value))
 
-            if is_error:
-                print("Не удалось поместить запись в базу\n")
-            else:
-                with open(current_db, "ab") as db:
-                    db.write(f"\n{new_record_types};".encode() + struct.pack(new_record_types, *new_record_values))
-                print("Новая запись помещена в базу.\n")
+            with open(current_db, "ab") as db:
+                db.write(b"\n" + b";".join(record_values))
+            print("Новая запись помещена в базу.\n")
         else:
             print("\nПеред использованием данной команды необходимо открыть/инициализировать базу данных\n")
     elif operation == "5":
@@ -270,17 +302,22 @@ while True:
         # 6) Поиск по одному полю
         # 7) Поиск по двум полям
         if current_db:
+            types = None
             headers = None
             total_max_len = 0
 
             with open(current_db, "rb") as db:
                 for line in db:
-                    if headers is None:
-                        headers, max_len = parse_line(line)
-                        table_size = len(headers)
+                    if types is None:
+                        types = parse_types(line.strip().decode().split(";"))
                     else:
-                        _, max_len = parse_line(line)
-                    total_max_len = max(total_max_len, max_len)
+                        if headers is None:
+                            headers = line.strip().decode().split(";")
+                            max_len = max([len(i) for i in headers])
+                            table_size = len(headers)
+                        else:
+                            _, max_len = parse_line(line, types)
+                        total_max_len = max(total_max_len, max_len)
 
             col1 = input("\nВведите 1 столбец для поиска: ")
             if col1 not in headers:
@@ -301,13 +338,13 @@ while True:
                 col2_index = col1_index
                 to_find_col2 = to_find_col1
 
-            table_size = len(headers)
             print_header(headers, total_max_len, -1, table_size)
 
             with open(current_db, "rb") as db:
                 db.readline()
+                db.readline()
                 for line in db:
-                    line, _ = parse_line(line.strip())
+                    line, _ = parse_line(line.strip(), types)
                     if line[col1_index] == to_find_col1 and line[col2_index] == to_find_col2:
                         print_line(line, total_max_len, table_size, -1, -1)
 
